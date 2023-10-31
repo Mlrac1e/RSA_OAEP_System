@@ -38,9 +38,10 @@ class RSAOAEPDecryptionAPP(QMainWindow):
         self.save_button.clicked.connect(self.save_decrypted_text)
         layout.addWidget(self.save_button)
 
-        # Decrypted text display
+        # 解密消息(只读ReadOnly)
         self.decrypted_text_display = QTextEdit()
         self.decrypted_text_display.setPlaceholderText("解密后的文本将在这里显示")
+        self.decrypted_text_display.setReadOnly(True)
         self.decrypted_text_display.setFontPointSize(25)
         layout.addWidget(self.decrypted_text_display)
 
@@ -95,7 +96,7 @@ class RSAOAEPDecryptionAPP(QMainWindow):
             file_name, _ = QFileDialog.getSaveFileName(self, "保存解密结果", "", "All Files (*);;Text Files (*.txt)", options=options)
             if file_name:
                 with open(file_name, "w") as file:
-                    file.write(self.decrypted_text)
+                    file.write(self.decrypted_text_display.setPlainText.encode('utf-8'))
     
     def close_window(self):
         self.close()  # 关闭子窗口

@@ -43,9 +43,11 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.generate_key_button.clicked.connect(self.generate_key_pair)
         layout.addWidget(self.generate_key_button)
 
-        # 加密后的文本显示
+        # 加密后的文本显示(Readonly)
         self.encrypted_text_display = QTextEdit()
+        self.encrypted_text_display.setReadOnly(True)
         self.encrypted_text_display.setPlaceholderText("加密后的文本将在这里显示")
+        
         layout.addWidget(self.encrypted_text_display)
         
         # 返回主页按钮
@@ -95,13 +97,16 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.encrypted_text_display.setPlainText(ciphertext.hex())
 
     def save_encrypted_text(self):
-        if self.ciphertext is not None:
-            options = QFileDialog.Options()
-            options |= QFileDialog.ReadOnly
-            file_name, _ = QFileDialog.getSaveFileName(self, "保存加密结果", "", "All Files (*);;Text Files (*.txt)", options=options)
-            if file_name:
-                with open(file_name, "wb") as file:
-                    file.write(self.ciphertext)
+        if self.ciphertext is None:
+            QMessageBox.critical(self, "错误", "没有加密的文本")
+            return
+        # 保存加密后的文本到文件
+        file_name, _ = QFileDialog.getSaveFileName(self, "保存加密后的文本", "", "文本文件(*.txt)")
+        if file_name:
+            with open(file_name, "wb") as file:
+                file.write(self.encrypted_text_display.toPlainText().encode('utf-8'))
+            QMessageBox.information(self, "成功", "加密后的文本保存成功")
+
 
     def generate_key_pair(self):
         # 生成密钥对
