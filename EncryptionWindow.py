@@ -1,7 +1,8 @@
 import sys
 import os
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QLabel, QFileDialog,QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QFileDialog,QMessageBox
+from PySide6.QtGui import QFont
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
@@ -23,9 +24,11 @@ class RSAOAEPEncryptionApp(QMainWindow):
         # 文本输入
         input_layout = QHBoxLayout()
         self.plain_text_input = QTextEdit()
+        font = QFont()
+        font.setPointSize(25)
+        self.plain_text_input.setFont(font)
         self.plain_text_input.setPlaceholderText("输入要加密的文本")
         input_layout.addWidget(self.plain_text_input)
-        self.plain_text_input.setFontPointSize(25)
         layout.addLayout(input_layout)
 
         # 加密按钮

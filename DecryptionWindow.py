@@ -2,6 +2,7 @@ import sys
 import os
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QMessageBox, QFileDialog
+from PySide6.QtGui import QFont
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
@@ -40,9 +41,12 @@ class RSAOAEPDecryptionAPP(QMainWindow):
 
         # 解密消息(只读ReadOnly)
         self.decrypted_text_display = QTextEdit()
+
         self.decrypted_text_display.setPlaceholderText("解密后的文本将在这里显示")
         self.decrypted_text_display.setReadOnly(True)
-        self.decrypted_text_display.setFontPointSize(25)
+        font = QFont()
+        font.setPointSize(25)
+        self.decrypted_text_display.setFont(font)
         layout.addWidget(self.decrypted_text_display)
 
         # 返回主页按钮
