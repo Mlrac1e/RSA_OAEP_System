@@ -7,12 +7,11 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
-
+from main import MainWindow
 
 class RSAOAEPEncryptionApp(QMainWindow):
     def __init__(self):
         super().__init__()
-
         self.setWindowTitle("RSA-OAEP Encryption")
         self.setFixedSize(1280, 960)
 
@@ -26,6 +25,7 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.plain_text_input = QTextEdit()
         self.plain_text_input.setPlaceholderText("输入要加密的文本")
         input_layout.addWidget(self.plain_text_input)
+        self.plain_text_input.setFontPointSize(25)
         layout.addLayout(input_layout)
 
         # 加密按钮
@@ -47,7 +47,13 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.encrypted_text_display = QTextEdit()
         self.encrypted_text_display.setPlaceholderText("加密后的文本将在这里显示")
         layout.addWidget(self.encrypted_text_display)
-
+        
+        # 返回主页按钮
+        self.return_button = QPushButton("返回主页")
+        self.return_button.clicked.connect(self.close_window)
+        layout.addWidget(self.return_button)
+        
+       
         central_widget.setLayout(layout)
 
         self.ciphertext = None
@@ -127,11 +133,9 @@ class RSAOAEPEncryptionApp(QMainWindow):
         #密钥保存成功
         QMessageBox.information(self, "成功", "密钥保存成功")
     
-    """
-    def return_main(self):
-        MainWindow.show(self)
-        self.close()
-    """
+    def close_window(self):
+        self.close()  # 关闭子窗口
+        MainWindow.setCentralWidget(MainWindow.central_widget)
     
 
 if __name__ == "__main__":

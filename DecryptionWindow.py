@@ -1,15 +1,13 @@
 import sys
 import os
-from typing import Optional
-#from main import MainWindow
 
-import PySide6.QtCore
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QMessageBox, QFileDialog
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
+from main import MainWindow
 
 class RSAOAEPDecryptionAPP(QMainWindow):
     def __init__(self):
@@ -43,11 +41,13 @@ class RSAOAEPDecryptionAPP(QMainWindow):
         # Decrypted text display
         self.decrypted_text_display = QTextEdit()
         self.decrypted_text_display.setPlaceholderText("解密后的文本将在这里显示")
+        self.decrypted_text_display.setFontPointSize(25)
         layout.addWidget(self.decrypted_text_display)
 
-        #返回主页按钮
-        #self.return_button = QPushButton("返回主页")
-        #self.return_button.clicked.connect(self.return_main)
+        # 返回主页按钮
+        self.return_button = QPushButton("返回主页")
+        self.return_button.clicked.connect(self.close_window)
+        layout.addWidget(self.return_button)
        
         
         central_widget.setLayout(layout)
@@ -97,11 +97,10 @@ class RSAOAEPDecryptionAPP(QMainWindow):
                 with open(file_name, "w") as file:
                     file.write(self.decrypted_text)
     
-    """
-    def return_main(self):
-        MainWindow.show(self)
-        self.close()
-    """
+    def close_window(self):
+        self.close()  # 关闭子窗口
+        MainWindow.setCentralWidget(MainWindow.central_widget)
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = RSAOAEPDecryptionAPP()
