@@ -90,13 +90,18 @@ class RSAOAEPDecryptionAPP(QMainWindow):
         self.decrypted_text_display.setPlainText(self.decrypted_text)
 
     def save_decrypted_text(self):
-        if self.decrypted_text is not None:
-            options = QFileDialog.Options()
-            options |= QFileDialog.ReadOnly
-            file_name, _ = QFileDialog.getSaveFileName(self, "保存解密结果", "", "All Files (*);;Text Files (*.txt)", options=options)
-            if file_name:
-                with open(file_name, "w") as file:
-                    file.write(self.decrypted_text_display.setPlainText.encode('utf-8'))
+        if self.decrypted_text is None:
+            QMessageBox.critical(self, "错误", "没有解密的文本")
+
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+
+
+        file_name, _ = QFileDialog.getSaveFileName(self, "保存解密结果", "", "All Files (*);;Text Files (*.txt)", options=options)
+        if file_name:
+            with open(file_name, "w") as file:
+                file.write(self.decrypted_text)
+            QMessageBox.information(self, "成功", "解密结果已保存")
     
     def close_window(self):
         self.close()  # 关闭子窗口
