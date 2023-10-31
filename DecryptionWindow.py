@@ -14,7 +14,6 @@ class RSAOAEPDecryptionAPP(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("RSA-OAEP Decryption")
         self.setFixedSize(1280, 960)
 
         central_widget = QWidget(self)

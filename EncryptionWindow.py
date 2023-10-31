@@ -13,7 +13,6 @@ from main import MainWindow
 class RSAOAEPEncryptionApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("RSA-OAEP Encryption")
         self.setFixedSize(1280, 960)
 
         central_widget = QWidget(self)
