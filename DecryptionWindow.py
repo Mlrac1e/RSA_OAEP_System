@@ -13,7 +13,6 @@ from main import MainWindow
 class RSAOAEPDecryptionAPP(QMainWindow):
     def __init__(self):
         super().__init__()
-
         self.setFixedSize(1280, 960)
 
         central_widget = QWidget(self)
@@ -21,19 +20,19 @@ class RSAOAEPDecryptionAPP(QMainWindow):
 
         layout = QVBoxLayout()
 
-        # Encrypted text input
+        # 解密文本输入框
         input_layout = QHBoxLayout()
         self.encrypted_text_input = QTextEdit()
         self.encrypted_text_input.setPlaceholderText("输入要解密的文本")
         input_layout.addWidget(self.encrypted_text_input)
         layout.addLayout(input_layout)
 
-        # Decryption button
+        # 解密按钮
         self.decrypt_button = QPushButton("解密")
         self.decrypt_button.clicked.connect(self.decrypt_text)
         layout.addWidget(self.decrypt_button)
 
-        # Save button
+        # 保存解密结果按钮
         self.save_button = QPushButton("保存解密结果")
         self.save_button.clicked.connect(self.save_decrypted_text)
         layout.addWidget(self.save_button)
@@ -52,14 +51,18 @@ class RSAOAEPDecryptionAPP(QMainWindow):
         self.return_button = QPushButton("返回主页")
         self.return_button.clicked.connect(self.close_window)
         layout.addWidget(self.return_button)
-       
         
+        # 设置布局
         central_widget.setLayout(layout)
-
         self.decrypted_text = None
 
+
     def decrypt_text(self):
-        # Load the private key from a file
+        # 检查是否有解密的文本
+        if self.decrypted_text is None:
+            QMessageBox.critical(self, "错误", "没有解密的文本")
+            return
+        # 获取私钥
         private_key_file = "private_key.pem"
         if not os.path.exists(private_key_file):
             QMessageBox.critical(self, "错误", "私钥文件不存在")
@@ -74,11 +77,11 @@ class RSAOAEPDecryptionAPP(QMainWindow):
         if key_file is None:
             return
     
-        # Get the text to decrypt from the input field
+        # 从输入框获取密文
         ciphertext_hex = self.encrypted_text_input.toPlainText()
         ciphertext = bytes.fromhex(ciphertext_hex)
 
-        # Decrypt the text with the private key
+        # 用私钥解密
         plaintext = private_key.decrypt(
             ciphertext,
             padding.OAEP(
@@ -88,18 +91,17 @@ class RSAOAEPDecryptionAPP(QMainWindow):
             )
         )
 
-        # Display the decrypted text
+        # 显示解密后的文本
         self.decrypted_text = plaintext.decode('utf-8')
         self.decrypted_text_display.setPlainText(self.decrypted_text)
 
     def save_decrypted_text(self):
         if self.decrypted_text is None:
             QMessageBox.critical(self, "错误", "没有解密的文本")
+            return
 
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
-
-
         file_name, _ = QFileDialog.getSaveFileName(self, "保存解密结果", "", "All Files (*);;Text Files (*.txt)", options=options)
         if file_name:
             with open(file_name, "w") as file:
@@ -109,9 +111,11 @@ class RSAOAEPDecryptionAPP(QMainWindow):
     def close_window(self):
         self.close()  # 关闭子窗口
         MainWindow.setCentralWidget(MainWindow.central_widget)
-        
+
+"""      
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = RSAOAEPDecryptionAPP()
     window.show()
     sys.exit(app.exec_())
+""" 
