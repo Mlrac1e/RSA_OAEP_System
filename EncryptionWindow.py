@@ -10,6 +10,13 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from main import MainWindow
 
+#定义RSA_OAEP_MAX_SIZE
+#MAX_Message_Size = keyLength - 2 - 2 * hashLength
+#SHA256 = 32
+#MAX_Message_Size = 256 - 2 - 2 * 32 = 190
+
+RSA_OAEP_MAX_SIZE = 190
+
 class RSAOAEPEncryptionApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -63,10 +70,15 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.ciphertext = None
 
     def encrypt_text(self):
-        
+        # 检查是否有解密的文本
         plaintext = self.plain_text_input.toPlainText()
         if plaintext == "":
             QMessageBox.critical(self, "错误", "输入为空")
+            return
+        
+        # 检查输入是否过长
+        if len(plaintext) > RSA_OAEP_MAX_SIZE:
+            QMessageBox.critical(self, "错误", "输入过长")
             return
         
         # 如果没有私钥和公钥，提示用户没有公钥与私钥
@@ -74,6 +86,7 @@ class RSAOAEPEncryptionApp(QMainWindow):
         if not os.path.exists(public_key_file):
             QMessageBox.critical(self, "错误", "公钥文件不存在")
             return
+        
         
         with open(public_key_file, "rb") as key_file:
             if key_file is None:
@@ -118,7 +131,7 @@ class RSAOAEPEncryptionApp(QMainWindow):
             backend=default_backend()
         )
 
-        # Save private key to a file
+        # 保存私钥到文件
         private_pem = private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PrivateFormat.PKCS8,
@@ -127,10 +140,10 @@ class RSAOAEPEncryptionApp(QMainWindow):
         with open("private_key.pem", "wb") as key_file:
             key_file.write(private_pem)
 
-        # Get the public key
+        # 生成公钥
         public_key = private_key.public_key()
 
-        # Save public key to a file
+        # 保存公钥到文件
         public_pem = public_key.public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
@@ -144,6 +157,7 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.close()  # 关闭子窗口
         MainWindow.setCentralWidget(MainWindow.central_widget)
     
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
