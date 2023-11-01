@@ -153,6 +153,7 @@ class RSAOAEPEncryptionApp(QMainWindow):
         #密钥保存成功
         QMessageBox.information(self, "成功", "密钥保存成功")
     
+    #返回主页
     def close_window(self):
         self.close()  # 关闭子窗口
         MainWindow.setCentralWidget(MainWindow.central_widget)
