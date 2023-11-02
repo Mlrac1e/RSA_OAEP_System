@@ -77,7 +77,8 @@ class RSAOAEPEncryptionApp(QMainWindow):
             return
         
         # 检查输入是否过长
-        if len(plaintext) > RSA_OAEP_MAX_SIZE:
+        plaintext_bytes = plaintext.encode('utf-8')
+        if len(plaintext_bytes) > RSA_OAEP_MAX_SIZE:
             QMessageBox.critical(self, "错误", "输入过长")
             return
         
@@ -153,6 +154,7 @@ class RSAOAEPEncryptionApp(QMainWindow):
         #密钥保存成功
         QMessageBox.information(self, "成功", "密钥保存成功")
     
+    #返回主页
     def close_window(self):
         self.close()  # 关闭子窗口
         MainWindow.setCentralWidget(MainWindow.central_widget)
