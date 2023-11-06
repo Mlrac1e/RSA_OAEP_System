@@ -1,12 +1,13 @@
 import sys
 import os
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QFileDialog,QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QFileDialog, QMessageBox, QInputDialog,QLineEdit
 from PySide6.QtGui import QFont
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from main import MainWindow
 
 #定义RSA_OAEP_MAX_SIZE
@@ -97,7 +98,7 @@ class RSAOAEPEncryptionApp(QMainWindow):
         
         
         
-        # 公钥解密
+        # 公钥加密
         ciphertext = public_key.encrypt(
             plaintext.encode('utf-8'),
             padding.OAEP(
@@ -112,6 +113,9 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.encrypted_text_display.setPlainText(ciphertext.hex())
 
     def save_encrypted_text(self):
+        if self.ciphertext is None:
+            QMessageBox.critical(self, "错误", "没有加密的文本")
+            return
         # 保存加密后的文本到文件
         file_name, _ = QFileDialog.getSaveFileName(self, "保存加密后的文本", "", "文本文件(*.txt)")
         if file_name:
@@ -120,19 +124,33 @@ class RSAOAEPEncryptionApp(QMainWindow):
             QMessageBox.information(self, "成功", "加密后的文本保存成功")
 
     def generate_key_pair(self):
+        while True:
+            password, ok = QInputDialog.getText(self, "自定义密码", "请输入密码:",QLineEdit.Password)
+            if not ok:
+                return  # 用户取消了操作
+            # 剥离前导和尾随空白字符并截取前32位
+            if len(password) < 1:
+                QMessageBox.critical(self, "错误", "密码不能为空")
+            elif len(password) <= 32:
+                break
+            else:
+                QMessageBox.critical(self, "错误", "密码长度不能超过32位")
+
+        password = password.encode('utf-8')
+        
         # 生成密钥对
         private_key = rsa.generate_private_key(
             public_exponent=65537,
             key_size=2048,
             backend=default_backend()
         )
-
-        # 保存私钥到文件
+        
         private_pem = private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption()
+            format=serialization.PrivateFormat.TraditionalOpenSSL,
+            encryption_algorithm=serialization.BestAvailableEncryption(password)
         )
+
         with open("private_key.pem", "wb") as key_file:
             key_file.write(private_pem)
 
@@ -146,7 +164,8 @@ class RSAOAEPEncryptionApp(QMainWindow):
         )
         with open("public_key.pem", "wb") as key_file:
             key_file.write(public_pem)
-        #密钥保存成功
+        
+        # 密钥保存成功
         QMessageBox.information(self, "成功", "密钥保存成功")
         public_key = None
         private_key = None
