@@ -1,6 +1,5 @@
 import sys
 import os
-
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QTextEdit, QFileDialog,QMessageBox
 from PySide6.QtGui import QFont
 from cryptography.hazmat.backends import default_backend
@@ -113,16 +112,12 @@ class RSAOAEPEncryptionApp(QMainWindow):
         self.encrypted_text_display.setPlainText(ciphertext.hex())
 
     def save_encrypted_text(self):
-        if self.ciphertext is None:
-            QMessageBox.critical(self, "错误", "没有加密的文本")
-            return
         # 保存加密后的文本到文件
         file_name, _ = QFileDialog.getSaveFileName(self, "保存加密后的文本", "", "文本文件(*.txt)")
         if file_name:
             with open(file_name, "wb") as file:
                 file.write(self.encrypted_text_display.toPlainText().encode('utf-8'))
             QMessageBox.information(self, "成功", "加密后的文本保存成功")
-
 
     def generate_key_pair(self):
         # 生成密钥对
@@ -153,6 +148,8 @@ class RSAOAEPEncryptionApp(QMainWindow):
             key_file.write(public_pem)
         #密钥保存成功
         QMessageBox.information(self, "成功", "密钥保存成功")
+        public_key = None
+        private_key = None
     
     #返回主页
     def close_window(self):

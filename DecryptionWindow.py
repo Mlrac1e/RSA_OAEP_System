@@ -59,9 +59,10 @@ class RSAOAEPDecryptionAPP(QMainWindow):
 
     def decrypt_text(self):
         # 检查是否有解密的文本
-        if self.decrypted_text is None:
+        if self.encrypted_text_input.toPlainText() == "":
             QMessageBox.critical(self, "错误", "没有解密的文本")
             return
+        
         # 获取私钥
         private_key_file = "private_key.pem"
         if not os.path.exists(private_key_file):
@@ -112,10 +113,10 @@ class RSAOAEPDecryptionAPP(QMainWindow):
         self.close()  # 关闭子窗口
         MainWindow.setCentralWidget(MainWindow.central_widget)
 
-"""      
+"""
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = RSAOAEPDecryptionAPP()
     window.show()
     sys.exit(app.exec_())
-""" 
+"""
