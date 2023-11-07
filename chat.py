@@ -121,7 +121,7 @@ class ChatWindow(QMainWindow):
             return
 
         # 加密消息
-        ciphertext = self.encrypt_text("bob", plaintext)
+        ciphertext = self.encrypt_text("alice", plaintext)
 
         # 在 BOB 的界面上显示加密后的消息
         self.bobmc["send_encrypted_text"].setPlainText(ciphertext)
@@ -131,7 +131,7 @@ class ChatWindow(QMainWindow):
         
   
         # 在 ALICE 的界面上解密并显示消息
-        decrypted_text = self.decrypt_text("bob", ciphertext)
+        decrypted_text = self.decrypt_text("alice", ciphertext)
         self.alicemc["receive_decrypted_text"].setPlainText(decrypted_text)
 
     def send_to_bob(self):
@@ -142,7 +142,7 @@ class ChatWindow(QMainWindow):
             return
 
         # 加密消息
-        ciphertext = self.encrypt_text("alice", plaintext)
+        ciphertext = self.encrypt_text("bob", plaintext)
 
         # 在 ALICE 的界面上显示加密后的消息
         self.alicemc["send_encrypted_text"].setPlainText(ciphertext)
@@ -151,7 +151,7 @@ class ChatWindow(QMainWindow):
         self.bobmc["receive_plain_text"].setPlainText(ciphertext)
 
         # 在 BOB 的界面上解密并显示消息
-        decrypted_text = self.decrypt_text("alice", ciphertext)
+        decrypted_text = self.decrypt_text("bob", ciphertext)
 
         self.bobmc["receive_decrypted_text"].setPlainText(decrypted_text)
 
