@@ -1,10 +1,10 @@
 # RSA_OAEP_System
- 基于pyQt6的RSA-OAEP加密系统
+ 基于pyQt6的RSA-OAEP加密系统以及本地加解密通信模拟
 ## 功能
  生成RSA公私钥对
-    加密消息
-    解密消息
-    模拟BOB和ALICE的通信
+    加密消息\
+    使用口令解密消息\
+    模拟BOB和ALICE的通信\
     (BOB使用BOB公钥加密，Alice使用BOB的私钥解密；Alice使用Alice公钥加密，BOB使用Alice的私钥解密)
 
 
