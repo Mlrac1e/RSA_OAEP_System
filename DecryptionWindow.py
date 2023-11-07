@@ -63,30 +63,35 @@ class RSAOAEPDecryptionAPP(QMainWindow):
         sender, ok = QInputDialog.getItem(self, "使用密钥", "使用密钥:", ["Bob", "Alice"], 0, False)
         if not ok:
             return
-
-        password, ok = QInputDialog.getText(self, "解密私钥", "请输入私钥密码:", QLineEdit.Password)
-        if not ok:
-            return
-
-        password = password.encode('utf-8')
-
         user_folder = f"{sender.lower()}_keys"
         private_key_file = os.path.join(user_folder, "private_key.pem")
 
         if not os.path.exists(private_key_file):
             QMessageBox.critical(self, "错误", f"{sender}的私钥文件不存在")
             return
+        
+        password, ok = QInputDialog.getText(self, "解密私钥", "请输入私钥密码:", QLineEdit.Password)
+        if not ok:
+            return
 
-        with open(private_key_file, "rb") as key_file:
-            if key_file is None:
-                QMessageBox.critical(self, "错误", f"{sender}的私钥文件错误")
-                return
+        password = password.encode('utf-8')
 
-            private_key = serialization.load_pem_private_key(
-                key_file.read(),
-                password=password,
-                backend=default_backend()
-            )
+        
+
+        try:
+            with open(private_key_file, "rb") as key_file:
+                if key_file is None:
+                    QMessageBox.critical(self, "错误", f"{name}的私钥文件错误")
+                    return
+
+                private_key = serialization.load_pem_private_key(
+                    key_file.read(),
+                    password=password,
+                    backend=default_backend()
+                )
+        except ValueError:
+            QMessageBox.critical(self, "错误", "密码错误")
+            return
 
         ciphertext_hex = self.encrypted_text_input.toPlainText()
         ciphertext = bytes.fromhex(ciphertext_hex)
