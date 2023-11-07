@@ -4,6 +4,9 @@
  生成RSA公私钥对
     加密消息
     解密消息
+    模拟BOB和ALICE的通信
+    (BOB使用BOB公钥加密，Alice使用BOB的私钥解密；Alice使用Alice公钥加密，BOB使用Alice的私钥解密)
+
 
 ## 文件结构
 ```
@@ -13,6 +16,7 @@
 ├── DecryptionWindow.py
 ├── EncryptionWindow.py
 ├── requirements.txt
+├── chat.py
 ```
 
 ## 环境配置
